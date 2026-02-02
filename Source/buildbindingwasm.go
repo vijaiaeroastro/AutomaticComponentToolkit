@@ -246,14 +246,20 @@ func generateMethodWrappers(
 		methodName := method.MethodName
 		// Return type
 		var returnType string
+		var returnParamType string
+		var returnParamClass string
 		if isOutParam {
 			returnType = "emscripten::val"
 		} else {
 			returnType = "void"
 			for _, p := range method.Params {
 				if p.ParamPass == "return" {
+					returnParamType = p.ParamType
+					returnParamClass = p.ParamClass
 					if p.ParamType == "struct" {
 						returnType = fmt.Sprintf("s%sWrapper", p.ParamClass)
+					} else if p.ParamType == "structarray" {
+						returnType = fmt.Sprintf("std::vector<s%sWrapper>", p.ParamClass)
 					} else if p.ParamType == "class" || p.ParamType == "optionalclass" {
 						returnType = fmt.Sprintf("P%s", p.ParamClass)
 					} else if p.ParamType == "basicarray" {
@@ -402,23 +408,21 @@ func generateMethodWrappers(
 			}
 			result.WriteString("    return output;\n")
 		} else {
-			retType := "void"
-			for _, p := range method.Params {
-				if p.ParamPass == "return" {
-					if p.ParamType == "struct" {
-						retType = fmt.Sprintf("s%sWrapper", p.ParamClass)
-					} else {
-						retType = ResolveCppType(p.ParamType, component)
-					}
-					break
-				}
-			}
-			if retType != "void" {
+			if returnType != "void" {
 				result.WriteString(fmt.Sprintf("    auto result = %s;\n", callExpr))
-				if strings.HasPrefix(retType, "s") {
-					result.WriteString(fmt.Sprintf("    %s wrapper;\n", retType))
+				if returnParamType == "struct" {
+					result.WriteString(fmt.Sprintf("    %s wrapper;\n", returnType))
 					result.WriteString("    wrapper.value = result;\n")
 					result.WriteString("    return wrapper;\n")
+				} else if returnParamType == "structarray" {
+					result.WriteString(fmt.Sprintf("    std::vector<s%sWrapper> wrappers;\n", returnParamClass))
+					result.WriteString("    wrappers.reserve(result.size());\n")
+					result.WriteString("    for (const auto& s : result) {\n")
+					result.WriteString(fmt.Sprintf("        s%sWrapper w;\n", returnParamClass))
+					result.WriteString("        w.value = s;\n")
+					result.WriteString("        wrappers.push_back(w);\n")
+					result.WriteString("    }\n")
+					result.WriteString("    return wrappers;\n")
 				} else {
 					result.WriteString("    return result;\n")
 				}
