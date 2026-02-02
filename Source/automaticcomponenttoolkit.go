@@ -372,6 +372,29 @@ func createComponent(component ComponentDefinition, outfolderBase string, bindin
 					}
 				}
 
+			case "Julia":
+				{
+					outputFolderBindingJulia := outputFolderBindings + "/Julia"
+					err = os.MkdirAll(outputFolderBindingJulia, os.ModePerm)
+					if err != nil {
+						return err
+					}
+
+					outputFolderExampleJulia := ""
+					if !suppressExamples {
+						outputFolderExampleJulia = outputFolderExamples + "/Julia"
+						err = os.MkdirAll(outputFolderExampleJulia, os.ModePerm)
+						if err != nil {
+							return err
+						}
+					}
+
+					err = BuildBindingJuliaDynamic(component, outputFolderBindingJulia, outputFolderExampleJulia, indentString)
+					if err != nil {
+						return err
+					}
+				}
+
 			case "Java":
 				{
 					version := 9

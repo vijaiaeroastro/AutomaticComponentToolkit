@@ -131,6 +131,11 @@ func (writer *LanguageWriter) WritePythonLicenseHeader(component ComponentDefini
 	writeLicenseHeaderEx(writer.Writer, component, abstract, includeVersion, "'''", "'''")
 }
 
+// WriteJuliaLicenseHeader writes a license header into a writer Julia-style comments
+func (writer *LanguageWriter) WriteJuliaLicenseHeader(component ComponentDefinition, abstract string, includeVersion bool) {
+	writeLicenseHeaderEx(writer.Writer, component, abstract, includeVersion, "#=", "=#")
+}
+
 // WriteJavaScriptLicenseHeader writes a license header with JS-style (C-style) comments.
 func (writer *LanguageWriter) WriteJavaScriptLicenseHeader(component ComponentDefinition, abstract string, includeVersion bool) {
 	writeLicenseHeaderEx(writer.Writer, component, abstract, includeVersion, "/*", "*/")

@@ -225,6 +225,8 @@
 			<xs:enumeration value="CDynamic"/>
 			<xs:enumeration value="CppDynamic"/>
 			<xs:enumeration value="Python"/>
+			<xs:enumeration value="Julia"/>
+			<xs:enumeration value="WASM"/>
 			<xs:enumeration value="Pascal"/>
 			<xs:enumeration value="Fortran"/>
 			<xs:enumeration value="Node"/>
