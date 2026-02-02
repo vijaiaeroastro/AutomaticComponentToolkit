@@ -276,6 +276,28 @@ func createComponent(component ComponentDefinition, outfolderBase string, bindin
 						return err
 					}
 				}
+			case "Rust":
+				{
+					outputFolderBindingRust := outputFolderBindings + "/Rust"
+					err = os.MkdirAll(outputFolderBindingRust, os.ModePerm)
+					if err != nil {
+						return err
+					}
+
+					outputFolderExampleRust := ""
+					if !suppressExamples {
+						outputFolderExampleRust = outputFolderExamples + "/Rust"
+						err = os.MkdirAll(outputFolderExampleRust, os.ModePerm)
+						if err != nil {
+							return err
+						}
+					}
+
+					err = BuildBindingRustDynamic(component, outputFolderBindingRust, outputFolderExampleRust, indentString)
+					if err != nil {
+						return err
+					}
+				}
 
 			case "Node":
 				{

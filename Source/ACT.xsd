@@ -229,6 +229,7 @@
 			<xs:enumeration value="Fortran"/>
 			<xs:enumeration value="Node"/>
 			<xs:enumeration value="Go"/>
+			<xs:enumeration value="Rust"/>
 			<xs:enumeration value="CSharp"/>
 		</xs:restriction>
 	</xs:simpleType>
